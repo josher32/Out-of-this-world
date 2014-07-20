@@ -71,7 +71,7 @@
     addedSpaceObject.interestFact = self.interestingFactTextField.text;
     addedSpaceObject.spaceImage = [UIImage imageNamed:@"EinsteinRing.jpg"];
     return addedSpaceObject;
-    
+   
 }
 
 @end

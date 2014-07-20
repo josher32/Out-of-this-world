@@ -37,10 +37,6 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
-
-    
-    self.planets = [[NSMutableArray alloc]init];
     
     for (NSMutableDictionary *planetData in [AstronomicalData allKnownPlanets])
     {
@@ -48,17 +44,20 @@
         OWSpaceObject *planet = [[OWSpaceObject alloc] initWithData:planetData andImage:[UIImage imageNamed:imageName]];
         [self.planets addObject:planet];
         
+    }
         NSArray *myPlanetAsPropertyLists = [[NSUserDefaults standardUserDefaults] arrayForKey:ADDED_SPACE_OBJECTS_KEY];
         for (NSDictionary *dictionary in myPlanetAsPropertyLists){
             OWSpaceObject *spaceObject = [self spaceObjectForDictionary:dictionary];
             NSLog(@"test5");
             [self.addedSpaceObjects addObject:spaceObject];
         }
-//        self.tableView.dataSource=self;
-//        self.tableView.delegate = self;
+
     }
     
-    
+
+//        self.tableView.dataSource=self;
+//        self.tableView.delegate = self;
+
 //    [self.planets addObject:planet1];
 //    [self.planets addObject:planet2];
 //    [self.planets addObject:planet3];
@@ -86,7 +85,7 @@
 //    NSNumber *floatNumber = [NSNumber numberWithFloat:3.14];
 //    NSLog(@"%@", floatNumber);
     
-}
+
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -131,10 +130,10 @@
 
 -(void)addSpaceObject:(OWSpaceObject *)spaceObject
 {
-    self.addedSpaceObjects = [[NSMutableArray alloc]init];
-    
+    [self.addedSpaceObjects addObject:spaceObject];
+
     //Will Save to NSUserDefaults here
-    NSMutableArray *spaceObjectsAsPropertyLists = [[[NSUserDefaults standardUserDefaults] arrayForKey:ADDED_SPACE_OBJECTS_KEY]mutableCopy];
+    NSMutableArray *spaceObjectsAsPropertyLists = [[[NSUserDefaults standardUserDefaults] arrayForKey:ADDED_SPACE_OBJECTS_KEY] mutableCopy];
     if (!spaceObjectsAsPropertyLists) spaceObjectsAsPropertyLists = [[NSMutableArray alloc]init];
   NSLog(@"test1");
     [spaceObjectsAsPropertyLists addObject:[self spaceObjectAsAPropertyList:spaceObject]];
@@ -146,6 +145,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     
     [self.tableView reloadData];
+   NSLog(@"finished adding info");
 }
 
 #pragma mark - Helper Methods
@@ -154,13 +154,17 @@
 {
     NSData *imageData = UIImagePNGRepresentation(spaceObject.spaceImage);
     NSDictionary *dictionary = @{PLANET_NAME : spaceObject.name, PLANET_GRAVITY : @(spaceObject.gravitationalForce), PLANET_DIAMETER : @(spaceObject.diameter), PLANET_YEAR_LENGTH : @(spaceObject.yearLength), PLANET_DAY_LENGTH : @(spaceObject.dayLength), PLANET_TEMPERATURE : @(spaceObject.temperature), PLANET_NUMBER_OF_MOONS : @(spaceObject.numberOfMoons), PLANET_NICKNAME : spaceObject.nickname, PLANET_INTERESTING_FACT : spaceObject.interestFact, PLANET_IMAGE : imageData};
-                                 
-                                 return dictionary;
+                  NSLog(@"finished dictionary");
+return dictionary;
 }
 -(OWSpaceObject *)spaceObjectForDictionary:(NSDictionary *)dictionary
 {
-    OWSpaceObject *spaceObject = [[OWSpaceObject alloc] initWithData:dictionary andImage:[UIImage imageNamed:@"EinsteinRing.jpg"]];
+    NSData *dataForImage = dictionary[PLANET_IMAGE];
+    UIImage *spaceObjectImage = [UIImage imageWithData:dataForImage];
+    
+    OWSpaceObject *spaceObject = [[OWSpaceObject alloc] initWithData:dictionary andImage:spaceObjectImage];
     return spaceObject;
+    
 }
 #pragma mark - Table view data source
 
